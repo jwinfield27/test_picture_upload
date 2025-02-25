@@ -11,32 +11,33 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 public class Main {
-    public static void main(String[] args) throws IOException{
-        getPicture();
-    }
 
-    private static void getPicture() throws IOException {
-        String url = "http://10.0.0.19:8080/sprites/id/452";
+    static String url = "http://10.0.0.19:8080/sprites/id/452";
+
+    public static void main(String[] args) throws IOException{
         SpriteData sprite = new SpriteData();
+
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet request = new HttpGet(url);
-            try (CloseableHttpResponse response = httpClient.execute(request)) {
-                if (response.getStatusLine().getStatusCode() == 200) {
-                    byte[] responseBody = EntityUtils.toByteArray(response.getEntity());
-                    sprite = new SpriteData();
-                    sprite.setSpriteData(responseBody);
-                } else {
-                    System.err.println("Failed to fetch sprite: " + response.getStatusLine());
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            setSpriteData(httpClient, sprite);
         }
+
         try (FileOutputStream fileOutputStream = new FileOutputStream(new File("test.jpg"))) {
             fileOutputStream.write(sprite.data);
             System.out.println("Sprite saved to " + "test.jpg");
-        } catch (IOException e) {
-            System.err.println("Failed to save sprite: " + e.getMessage());
+        }
+
+    }
+
+    private static void setSpriteData(CloseableHttpClient httpClient, SpriteData sprite) throws IOException{
+        HttpGet request = new HttpGet(url);
+        try (CloseableHttpResponse response = httpClient.execute(request)) {
+            if (response.getStatusLine().getStatusCode() == 200) {
+                byte[] responseBody = EntityUtils.toByteArray(response.getEntity());
+                sprite = new SpriteData();
+                sprite.setSpriteData(responseBody);
+            } else {
+                System.err.println("Failed to fetch sprite: " + response.getStatusLine());
+            }
         }
     }
 }
