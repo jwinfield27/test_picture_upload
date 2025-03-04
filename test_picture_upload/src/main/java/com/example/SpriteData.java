@@ -1,16 +1,18 @@
 package com.example;
 
 public class SpriteData {
-    public byte[] data;
+    public byte[] sprite_data;
+    public String sprite_name;
 
     SpriteData(){}
 
-    SpriteData(byte[] data){
-        this.data = data;
+    SpriteData(byte[] data, String sprite_name){
+        this.sprite_data = data;
+        this.sprite_name = sprite_name;
     }
 
     public void setSpriteData(byte[] data){
-        this.data = data;
+        this.sprite_data = data;
     }
 }
 
